@@ -10,8 +10,23 @@ pygame.init()
 WIDTH, HEIGHT = 670, 750
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
-space = pymunk.Space()
-space.gravity = (0, 900)
+bowl = pymunk.Space()
+bowl.gravity = (0, 900)
+
+ball_properties = {
+    25 : pygame.image.load("res/ball_1.png"),
+    32 : pygame.image.load("res/ball_2.png"),
+    50 : pygame.image.load("res/ball_3.png"),
+    52 : pygame.image.load("res/ball_4.png"),
+    65 : pygame.image.load("res/ball_5.png"),
+    85 : pygame.image.load("res/ball_6.png"),
+    100 : pygame.image.load("res/ball_7.png"),
+    117 : pygame.image.load("res/ball_8.png"),
+    192 : pygame.image.load("res/ball_9.png"),
+    165 : pygame.image.load("res/ball_10.png"),
+    195 : pygame.image.load("res/ball_11.png"),
+
+}
 
 # Cargar imágenes de las bolas y escalarlas
 ball_sizes = [25,32,50,52,65,85,100,117,192,165,195]  # Tamaños de las bolas
@@ -24,7 +39,7 @@ ball_images = {
 balls = []
 
 
-def create_ball(position, radius):
+def create_ball(position, radius, space):
     """Crea una nueva bola con imagen en la posición dada"""
 
     body = pymunk.Body(1, pymunk.moment_for_circle(1, 0, radius))
@@ -56,19 +71,19 @@ def collision_handler(arbiter, space, data):
         balls.remove(shape_b)
 
         # Crear la nueva bola más grande
-        create_ball((pos_x, pos_y), new_radius)
+        create_ball((pos_x, pos_y), new_radius,space)
 
     return False  # Evita que pymunk procese la colisión normalmente
 
 
 # Crear manejadores de colisión para cada tamaño de bola
 for size in ball_sizes:
-    handler = space.add_collision_handler(size, size)
+    handler = bowl.add_collision_handler(size, size)
     handler.begin = collision_handler
 
 
 # Crear bordes de la pantalla
-def create_walls():
+def create_walls(space):
     static_body = space.static_body
     walls = [
         pymunk.Segment(static_body, (0, HEIGHT), (WIDTH, HEIGHT), 5),
@@ -78,10 +93,10 @@ def create_walls():
     for wall in walls:
         wall.elasticity = 0
         wall.friction = 1
-        space.add(wall)
+        bowl.add(wall)
 
 
-create_walls()
+create_walls(bowl)
 
 # Bucle principal
 running = True
@@ -92,15 +107,15 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            create_ball(pygame.mouse.get_pos(), ball_sizes[random.randint(0, 3)])
+            create_ball(pygame.mouse.get_pos(), ball_sizes[random.randint(0, 3)],bowl)
 
-    space.step(1 / 60)
+    bowl.step(1 / 60)
 
     # Dibujar las bolas con sus imágenes
     for ball in balls:
         x, y = int(ball.body.position.x), int(ball.body.position.y)
         radius = ball.radius
-        image = ball_images[radius]
+        image = pygame.transform.scale(ball_properties[radius], (radius*2,radius*2))
 
         # Obtener el ángulo de rotación del cuerpo de la bola
         angle = math.degrees(ball.body.angle)  # Convertir de radianes a grados
