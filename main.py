@@ -30,10 +30,6 @@ ball_properties = {
 
 # Cargar imágenes de las bolas y escalarlas
 ball_sizes = [25,32,50,52,65,85,100,117,192,165,195]  # Tamaños de las bolas
-ball_images = {
-    size: pygame.transform.scale(pygame.image.load("ball.png"), (size * 2, size * 2))
-    for size in ball_sizes
-}
 
 # Lista de bolas en el espacio
 balls = []
@@ -58,7 +54,7 @@ def collision_handler(arbiter, space, data):
     shape_a, shape_b = arbiter.shapes
     radius = shape_a.radius  # Ambas bolas tienen el mismo radio
 
-    if radius in ball_sizes and ball_sizes.index(radius) < len(ball_sizes) - 1:
+    if shape_a.radius == shape_a.radius:
         new_radius = ball_sizes[ball_sizes.index(radius) + 1]
 
         # Posición media entre las dos bolas
@@ -66,9 +62,12 @@ def collision_handler(arbiter, space, data):
         pos_y = (shape_a.body.position.y + shape_b.body.position.y) / 2
 
         # Eliminar las bolas antiguas
-        space.remove(shape_a, shape_a.body, shape_b, shape_b.body)
-        balls.remove(shape_a)
-        balls.remove(shape_b)
+        if shape_a in balls:
+            balls.remove(shape_a)
+            space.remove(shape_a, shape_a.body)
+        if shape_b in balls:
+            balls.remove(shape_b)
+            space.remove(shape_b, shape_b.body)
 
         # Crear la nueva bola más grande
         create_ball((pos_x, pos_y), new_radius,space)
