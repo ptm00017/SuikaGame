@@ -8,6 +8,8 @@ class GameScene(ABC):
         :param screen: Pantalla donde se dibuja el juego.
         """
         self.screen = screen
+        self.running = True
+        self.nextGameScene = self
 
     @abstractmethod
     def handleUserInputs(self):
@@ -29,6 +31,9 @@ class GameScene(ABC):
     def gameLoop(self):
         pass
 
-    @abstractmethod
-    def getScene(self):
-        pass
+    def isRunning(self) -> bool:
+        return self.running
+
+    def getNextScene(self):
+        return self.nextGameScene
+
