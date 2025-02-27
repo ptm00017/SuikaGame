@@ -2,13 +2,17 @@ import pygame
 from abc import ABC, abstractmethod
 
 class GameScene(ABC):
-    def __init__(self):
+    def __init__(self, framerate):
         """
         Inicializa la escena.
         :param screen: Pantalla donde se dibuja el juego.
         """
         self.screen = pygame.display.set_mode((800, 600),  pygame.RESIZABLE)
         self.surface = pygame.Surface((800, 600))
+
+        self.clock = pygame.time.Clock()
+        self.framerate = framerate
+
         self.running = True
         self.nextGameScene = self
 
@@ -28,9 +32,12 @@ class GameScene(ABC):
     def draw(self):
         pass
 
-    @abstractmethod
     def gameLoop(self):
-        pass
+        while self.running:
+            deltaTime = self.clock.tick(self.framerate) / 1000
+            self.handleUserInputs()
+            self.update(deltaTime)
+            self.draw()
 
     def isRunning(self) -> bool:
         return self.running

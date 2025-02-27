@@ -4,7 +4,7 @@ from CubeScene import CubeScene
 pygame.init()
 
 #escena1 = Menu(screen)
-escena2 = CubeScene()
+escena2 = CubeScene(60)
 
 currentScene = escena2
 

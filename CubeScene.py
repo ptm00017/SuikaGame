@@ -4,8 +4,8 @@ from GameScene import GameScene
 
 
 class CubeScene(GameScene):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, framerate):
+        super().__init__(framerate)
         self.clock = pygame.time.Clock()
         self.cube_x, self.cube_y = 100, 100
         self.speed = 200
@@ -38,17 +38,5 @@ class CubeScene(GameScene):
 
         self._drawScaledGame()
 
-
     def getNextGameScene(self):
         return self.nextGameScene
-
-
-    def gameLoop(self):
-        while self.running:
-            deltaTime = self.clock.tick(60) / 1000
-            self.handleUserInputs()
-            self.update(deltaTime)
-            self.draw()
-
-
-
