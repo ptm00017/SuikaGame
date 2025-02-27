@@ -2,10 +2,9 @@ import pygame
 from CubeScene import CubeScene
 
 pygame.init()
-screen = pygame.display.set_mode((800, 600))
 
 #escena1 = Menu(screen)
-escena2 = CubeScene(screen)
+escena2 = CubeScene()
 
 currentScene = escena2
 

@@ -4,8 +4,8 @@ from GameScene import GameScene
 
 
 class CubeScene(GameScene):
-    def __init__(self, screen):
-        super().__init__(screen)
+    def __init__(self):
+        super().__init__()
         self.clock = pygame.time.Clock()
         self.cube_x, self.cube_y = 100, 100
         self.speed = 200
@@ -32,10 +32,12 @@ class CubeScene(GameScene):
             self.cube_y += self.speed * deltaTime
 
     def draw(self):
-        self.screen.fill((0, 0, 0))
-        pygame.draw.rect(self.screen, (0, 255, 0), (self.cube_x, self.cube_y, 50, 50))
-        self.button.draw(self.screen)
-        pygame.display.flip()
+        self.surface.fill((255, 255, 255))
+        pygame.draw.rect(self.surface, (0, 255, 0), (self.cube_x, self.cube_y, 50, 50))
+        self.button.draw(self.surface)
+
+        self._drawScaledGame()
+
 
     def getNextGameScene(self):
         return self.nextGameScene

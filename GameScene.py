@@ -2,12 +2,13 @@ import pygame
 from abc import ABC, abstractmethod
 
 class GameScene(ABC):
-    def __init__(self, screen):
+    def __init__(self):
         """
         Inicializa la escena.
         :param screen: Pantalla donde se dibuja el juego.
         """
-        self.screen = screen
+        self.screen = pygame.display.set_mode((800, 600),  pygame.RESIZABLE)
+        self.surface = pygame.Surface((800, 600))
         self.running = True
         self.nextGameScene = self
 
@@ -37,3 +38,26 @@ class GameScene(ABC):
     def getNextScene(self):
         return self.nextGameScene
 
+    def _correctMousePos(self, event, screen, surface):
+        return None
+
+    def _drawScaledGame(self):
+
+        # Obtener tamaños de la ventana y la superficie base
+        window_width, window_height = self.screen.get_size()
+        base_width, base_height = self.surface.get_size()
+
+        # Calcular la escala máxima manteniendo la relación de aspecto
+        scale = min(window_width / base_width, window_height / base_height)
+        new_width = int(base_width * scale)
+        new_height = int(base_height * scale)
+
+        # Escalar la superficie y centrarla en la pantalla
+        scaled_surface = pygame.transform.smoothscale(self.surface, (new_width, new_height))
+        x_offset = (window_width - new_width) // 2
+        y_offset = (window_height - new_height) // 2
+
+        self.screen.fill((0, 0, 0))  # Llenar el fondo para evitar residuos
+        self.screen.blit(scaled_surface, (x_offset, y_offset))
+
+        pygame.display.flip()
