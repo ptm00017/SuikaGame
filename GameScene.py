@@ -28,3 +28,7 @@ class GameScene(ABC):
     @abstractmethod
     def gameLoop(self):
         pass
+
+    @abstractmethod
+    def getScene(self):
+        pass

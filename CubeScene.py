@@ -1,4 +1,5 @@
 import pygame
+from Button import Button
 from GameScene import GameScene
 
 
@@ -9,6 +10,8 @@ class CubeScene(GameScene):
         self.clock = pygame.time.Clock()
         self.cube_x, self.cube_y = 100, 100
         self.speed = 200
+
+        self.button = Button(300, 200, 200, 50, (0, 255, 0), "Start Cube", pygame.font.SysFont("Arial", 36), (0, 0, 0), CubeScene)
 
     def handleUserInputs(self):
         for event in pygame.event.get():
@@ -32,6 +35,7 @@ class CubeScene(GameScene):
     def draw(self):
         self.screen.fill((0, 0, 0))
         pygame.draw.rect(self.screen, (0, 255, 0), (self.cube_x, self.cube_y, 50, 50))
+        self.button.draw(self.screen)
         pygame.display.flip()
 
     def gameLoop(self):
