@@ -14,7 +14,7 @@ class GameScene(ABC):
         self.framerate = framerate
 
         self.running = True
-        self.nextGameScene = self
+        self.nextGameScene = None
 
     @abstractmethod
     def handleUserInputs(self):

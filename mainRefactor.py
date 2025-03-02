@@ -1,14 +1,21 @@
 import pygame
+
+from SceneManager import SceneManager, GameState
 from CubeScene import CubeScene
+from Menu import Menu
+
 
 pygame.init()
 
-#escena1 = Menu(screen)
-escena2 = CubeScene(60)
+sceneManager = SceneManager()
 
-currentScene = escena2
+sceneManager.addScene(GameState.MENU,Menu(60))
+sceneManager.addScene(GameState.GAME,CubeScene(60))
+try:
+    while sceneManager.getScene().isRunning():
+        sceneManager.getScene().gameLoop()
+        sceneManager.changeScene(sceneManager.getScene().getNextGameScene())
+except:
+    print("")
 
-while currentScene.isRunning():
-    currentScene.gameLoop()
-    currentScene = currentScene.getNextScene()
 pygame.quit()

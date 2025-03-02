@@ -1,13 +1,14 @@
 import pygame
+from SceneManager import GameState
 
 class Button:
-    def __init__(self, x, y, width, height, color, text, font, text_color, scene_class):
+    def __init__(self, x, y, width, height, color, text, font, text_color, sceneEnum):
         self.rect = pygame.Rect(x, y, width, height)
         self.color = color
         self.text = text
         self.font = font
         self.text_color = text_color
-        self.scene_class = scene_class
+        self.sceneEnum = sceneEnum
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, self.rect, border_radius=20)
@@ -16,5 +17,7 @@ class Button:
         screen.blit(text_surface, text_rect)
 
     def is_clicked(self, pos):
-        return self.rect.collidepoint(pos)
+        hasBeenClicked = self.rect.collidepoint(pos)
+
+        return hasBeenClicked
 

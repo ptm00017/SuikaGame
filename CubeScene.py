@@ -1,7 +1,7 @@
 import pygame
 from Button import Button
 from GameScene import GameScene
-
+from SceneManager import GameState
 
 class CubeScene(GameScene):
     def __init__(self, framerate):
@@ -10,7 +10,7 @@ class CubeScene(GameScene):
         self.cube_x, self.cube_y = 100, 100
         self.speed = 200
 
-        self.button = Button(300, 200, 200, 50, (0, 255, 0), "Start Cube", pygame.font.SysFont("Arial", 36), (0, 0, 0), CubeScene)
+        self.button = Button(300, 200, 200, 50, (0, 255, 0), "Menu", pygame.font.SysFont("Arial", 36), (0, 0, 0), GameState.MENU)
 
     def handleUserInputs(self):
         for event in pygame.event.get():
