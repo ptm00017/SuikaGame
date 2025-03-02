@@ -45,8 +45,13 @@ class GameScene(ABC):
     def getNextScene(self):
         return self.nextGameScene
 
-    def _correctMousePos(self, event, screen, surface):
-        return None
+    def _correctMousePos(self, event):
+        window_size = self.screen.get_size()
+        surface_size = self.surface.get_size()
+
+        return (pygame.mouse.get_pos()[0] * surface_size[0] / window_size[0],
+                pygame.mouse.get_pos()[1] * surface_size[1] / window_size[1])
+
 
     def _drawScaledGame(self):
 

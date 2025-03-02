@@ -1,5 +1,7 @@
 from enum import Enum
 
+import pygame
+
 
 class GameState(Enum):
     MENU = 1

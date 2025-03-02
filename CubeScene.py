@@ -17,6 +17,7 @@ class CubeScene(GameScene):
             if event.type == pygame.QUIT:
                 self.running = False
 
+
     def handlePause(self):
         pass
 
