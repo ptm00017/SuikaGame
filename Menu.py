@@ -15,12 +15,12 @@ class Menu(GameScene):
     def handleUserInputs(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.running = False
+                pygame.quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 correct_mouse_pos = self._correctMousePos(event.pos)
                 if self.button.is_clicked(correct_mouse_pos):
                     self.nextGameScene = self.button.sceneEnum
-                    pygame.event.post(pygame.event.Event(pygame.QUIT))
+                    self.running = False
 
     def handlePause(self):
         pass
@@ -42,6 +42,3 @@ class Menu(GameScene):
         self.button.draw(self.surface)
 
         self._drawScaledGame()
-
-    def getNextGameScene(self):
-        return self.nextGameScene

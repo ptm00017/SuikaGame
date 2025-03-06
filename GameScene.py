@@ -2,6 +2,8 @@ import pygame
 from abc import ABC, abstractmethod
 
 class GameScene(ABC):
+    prueba = False
+
     def __init__(self, framerate):
         """
         Inicializa la escena.
@@ -35,14 +37,23 @@ class GameScene(ABC):
     def gameLoop(self):
         while self.running:
             deltaTime = self.clock.tick(self.framerate) / 1000
+            if self.prueba:
+                print("GameScene::gameLoop()::handleUserInputs()")
             self.handleUserInputs()
+            if self.prueba:
+                print("GameScene::gameLoop()::update()")
             self.update(deltaTime)
+            if self.prueba:
+                print("GameScene::gameLoop()::draw()")
             self.draw()
 
     def isRunning(self) -> bool:
         return self.running
 
-    def getNextScene(self):
+    def getNextGameScene(self):
+        if(self.nextGameScene is not None):
+            prueba = True
+            print("GameScene::getNextGameScene()\t"+str(self.nextGameScene))
         return self.nextGameScene
 
     def _correctMousePos(self, event):
