@@ -1,6 +1,6 @@
 import pygame
 from Button import Button
-from GameScene import GameScene
+from Scene import GameScene
 from SceneManager import GameState
 
 class Menu(GameScene):
@@ -40,5 +40,3 @@ class Menu(GameScene):
         self.surface.fill((255, 255, 255))
         pygame.draw.rect(self.surface, (255, 0, 0), (self.cube_x, self.cube_y, 50, 50))
         self.button.draw(self.surface)
-
-        self._drawScaledGame()

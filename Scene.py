@@ -45,7 +45,11 @@ class GameScene(ABC):
             self.update(deltaTime)
             if self.prueba:
                 print("GameScene::gameLoop()::draw()")
+
+            self.surface.fill((255, 255, 255))
             self.draw()
+            self._drawScaledGame()
+            pygame.display.flip()
 
     def isRunning(self) -> bool:
         return self.running
@@ -82,5 +86,3 @@ class GameScene(ABC):
 
         self.screen.fill((0, 0, 0))  # Llenar el fondo para evitar residuos
         self.screen.blit(scaled_surface, (x_offset, y_offset))
-
-        pygame.display.flip()
