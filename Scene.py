@@ -9,8 +9,8 @@ class GameScene(ABC):
         Inicializa la escena.
         :param screen: Pantalla donde se dibuja el juego.
         """
-        self.screen = pygame.display.set_mode((800, 600),  pygame.RESIZABLE)
-        self.surface = pygame.Surface((800, 600))
+        self.screen = pygame.display.set_mode((1280, 720),  pygame.RESIZABLE)
+        self.surface = pygame.Surface((1920, 1080))
 
         self.clock = pygame.time.Clock()
         self.framerate = framerate
@@ -37,15 +37,9 @@ class GameScene(ABC):
     def gameLoop(self):
         while self.running:
             deltaTime = self.clock.tick(self.framerate) / 1000
-            if self.prueba:
-                print("GameScene::gameLoop()::handleUserInputs()")
             self.handleUserInputs()
-            if self.prueba:
-                print("GameScene::gameLoop()::update()")
-            self.update(deltaTime)
-            if self.prueba:
-                print("GameScene::gameLoop()::draw()")
-
+            if deltaTime < 2 * 1 / self.framerate:
+                self.update(deltaTime)
             self.surface.fill((255, 255, 255))
             self.draw()
             self._drawScaledGame()
