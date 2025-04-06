@@ -40,6 +40,9 @@ class GameScene(ABC):
             self.handleUserInputs()
             if deltaTime < 2 * 1 / self.framerate:
                 self.update(deltaTime)
+            else:
+                print(self.screen)
+                print(self.surface)
             self.surface.fill((255, 255, 255))
             self.draw()
             self._drawScaledGame()
@@ -55,11 +58,27 @@ class GameScene(ABC):
         return self.nextGameScene
 
     def _correctMousePos(self, event):
-        window_size = self.screen.get_size()
-        surface_size = self.surface.get_size()
+        window_width, window_height = self.screen.get_size()
+        base_width, base_height = self.surface.get_size()
 
-        return (pygame.mouse.get_pos()[0] * surface_size[0] / window_size[0],
-                pygame.mouse.get_pos()[1] * surface_size[1] / window_size[1])
+        scale = min(window_width / base_width, window_height / base_height)
+        new_width = int(base_width * scale)
+        new_height = int(base_height * scale)
+
+        x_offset = (window_width - new_width) // 2
+        y_offset = (window_height - new_height) // 2
+
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+
+        # Verificar si el ratón está dentro de los bordes negros
+        if mouse_x < x_offset or mouse_x > x_offset + new_width or mouse_y < y_offset or mouse_y > y_offset + new_height:
+            return None
+
+        # Ajustar la posición del ratón
+        corrected_x = (mouse_x - x_offset) * base_width / new_width
+        corrected_y = (mouse_y - y_offset) * base_height / new_height
+
+        return corrected_x, corrected_y
 
 
     def _drawScaledGame(self):

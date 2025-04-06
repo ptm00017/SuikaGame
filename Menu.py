@@ -18,9 +18,10 @@ class Menu(GameScene):
                 pygame.quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 correct_mouse_pos = self._correctMousePos(event.pos)
-                if self.button.is_clicked(correct_mouse_pos):
-                    self.nextGameScene = self.button.sceneEnum
-                    self.running = False
+                if correct_mouse_pos is not None:
+                    if self.button.is_clicked(correct_mouse_pos):
+                        self.nextGameScene = self.button.sceneEnum
+                        self.running = False
 
     def handlePause(self):
         pass
