@@ -40,9 +40,6 @@ class GameScene(ABC):
             self.handleUserInputs()
             if deltaTime < 2 * 1 / self.framerate:
                 self.update(deltaTime)
-            else:
-                print(self.screen)
-                print(self.surface)
             self.surface.fill((255, 255, 255))
             self.draw()
             self._drawScaledGame()

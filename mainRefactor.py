@@ -15,6 +15,6 @@ try:
     while sceneManager.getScene().isRunning():
         sceneManager.getScene().gameLoop()
         sceneManager.changeScene(sceneManager.getScene().getNextGameScene())
-except:
-    print(" ")
+except Exception as e:
+    print(e)
 pygame.quit()

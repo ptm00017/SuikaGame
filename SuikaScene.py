@@ -1,3 +1,5 @@
+from typing import cast
+
 import pygame
 import pymunk
 import pymunk.pygame_util
@@ -32,7 +34,8 @@ class SuikaScene(GameScene):
         ]
 
         for wall in walls:
-            wall.elasticity = 0.8
+            wall.elasticity = 0
+            wall.friction = .6
             self.space.add(wall)
 
     def handleUserInputs(self):
@@ -40,17 +43,15 @@ class SuikaScene(GameScene):
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
+                print("Mouse button pressed")
                 self.create_ball(self._correctMousePos(event.pos))
 
-            #if event.type == pygame.WINDOWMOVED or event.type == pygame.WINDOWRESIZED:
-
-
-            #TODO: averiguar estoj
-            #elif event.type == pygame.VIDEORESIZE or event.type == pygame.WINDOWEVENT
-            #    or event.type == pygame.WINDOWMOVED:
-
-
     def create_ball(self, position):
+        if position is None:
+            return
+
+        print("Ball created")
+
         fruit_type = 1
         fruit = Fruit(position, fruit_type)
 
@@ -62,6 +63,9 @@ class SuikaScene(GameScene):
 
     def draw(self):
         self.space.debug_draw(self.draw_options)
+        for ball in self.balls:
+            ball.draw(self.surface)
+
 
     def handlePause(self):
         pass

@@ -33,24 +33,23 @@ class Fruit(pymunk.Circle):
         self.friction = properties["friction"]
 
         self.image = pygame.image.load(properties["image_path"])
-        
+        self.image = pygame.transform.scale(self.image, (2 * radius, 2 * radius))
 
-def draw(self, screen):
-    x, y = int(self.body.position.x), int(self.body.position.y)
-    radius = self.radius
-    image = pygame.transform.scale(pygame.image.load(self.fruit_properties[self.radius]["image_path"]), (radius * 2, radius * 2))
+    #def draw(self, screen):
+    #    screen.blit(self.image, (int(self.body.position.x) - self.radius, int(self.body.position.y) - self.radius))
 
-    # Obtener el ángulo de rotación del cuerpo de la fruta
-    angle = math.degrees(self.body.angle)  # Convertir de radianes a grados
+    def draw(self, screen):
+        # Obtén el ángulo de rotación del cuerpo en grados
+        angle = -math.degrees(self.body.angle)  # Convierte de radianes a grados (el signo negativo es para que gire en la dirección correcta)
 
-    # Rotar la imagen
-    rotated_image = pygame.transform.rotate(image, -angle)  # Rotar en sentido antihorario
+        # Rota la imagen
+        rotated_image = pygame.transform.rotate(self.image, angle)
 
-    # Obtener el nuevo rectángulo para la imagen rotada
-    rotated_rect = rotated_image.get_rect(center=(x, y))
+        # Obtén el rectángulo de la imagen rotada
+        rotated_rect = rotated_image.get_rect()
 
-    # Mantener la transparencia de la imagen rotada
-    rotated_image.set_colorkey((0, 0, 0))  # Establecer el color negro (o el color de fondo) como transparente
+        # Coloca la imagen rotada centrada en la posición del cuerpo
+        rotated_rect.center = (int(self.body.position.x), int(self.body.position.y))
 
-    # Dibujar la imagen rotada en la pantalla con transparencia
-    screen.blit(rotated_image, rotated_rect.topleft)
+        # Dibuja la imagen rotada en la pantalla
+        screen.blit(rotated_image, rotated_rect.topleft)
