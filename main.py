@@ -51,26 +51,27 @@ def create_ball(position, radius, space):
 
 def collision_handler(arbiter, space, data):
     """Maneja colisiones entre bolas del mismo tamaño"""
+    print("Collision detected")
     shape_a, shape_b = arbiter.shapes
     radius = shape_a.radius  # Ambas bolas tienen el mismo radio
 
-    if shape_a.radius == shape_a.radius:
-        new_radius = ball_sizes[ball_sizes.index(radius) + 1]
+    #if shape_a.radius == shape_a.radius:
+    new_radius = ball_sizes[ball_sizes.index(radius) + 1]
 
-        # Posición media entre las dos bolas
-        pos_x = (shape_a.body.position.x + shape_b.body.position.x) / 2
-        pos_y = (shape_a.body.position.y + shape_b.body.position.y) / 2
+    # Posición media entre las dos bolas
+    pos_x = (shape_a.body.position.x + shape_b.body.position.x) / 2
+    pos_y = (shape_a.body.position.y + shape_b.body.position.y) / 2
 
-        # Eliminar las bolas antiguas
-        if shape_a in balls:
-            balls.remove(shape_a)
-            space.remove(shape_a, shape_a.body)
-        if shape_b in balls:
-            balls.remove(shape_b)
-            space.remove(shape_b, shape_b.body)
+    # Eliminar las bolas antiguas
+    if shape_a in balls:
+        balls.remove(shape_a)
+        space.remove(shape_a, shape_a.body)
+    if shape_b in balls:
+        balls.remove(shape_b)
+        space.remove(shape_b, shape_b.body)
 
-        # Crear la nueva bola más grande
-        create_ball((pos_x, pos_y), new_radius,space)
+    # Crear la nueva bola más grande
+    create_ball((pos_x, pos_y), new_radius,space)
 
     return False  # Evita que pymunk procese la colisión normalmente
 

@@ -6,7 +6,7 @@ import pymunk
 class Fruit(pymunk.Circle):
     # Parametro de cada fruta
     fruit_properties = {
-        1: {"radius": 50, "elasticity": 0, "friction": 1, "mass": 20, "image_path": "res/ball_1.png"},
+        1: {"radius": 25, "elasticity": 0, "friction": 1, "mass": 20, "image_path": "res/ball_1.png"},
         2: {"radius": 32, "elasticity": 0, "friction": 1, "mass": 20, "image_path": "res/ball_2.png"},
         3: {"radius": 50, "elasticity": 0, "friction": 1, "mass": 20, "image_path": "res/ball_3.png"},
         4: {"radius": 52, "elasticity": 0, "friction": 1, "mass": 20, "image_path": "res/ball_4.png"},
@@ -31,9 +31,10 @@ class Fruit(pymunk.Circle):
         super().__init__(body, radius)
         self.elasticity = properties["elasticity"]
         self.friction = properties["friction"]
-
+        self.fruit_type = fruit_type
+        self.collision_type = 1
         self.image = pygame.image.load(properties["image_path"])
-        self.image = pygame.transform.scale(self.image, (2 * radius, 2 * radius))
+        self.image = pygame.transform.smoothscale(self.image, (2 * radius, 2 * radius))
 
     #def draw(self, screen):
     #    screen.blit(self.image, (int(self.body.position.x) - self.radius, int(self.body.position.y) - self.radius))
