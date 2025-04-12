@@ -27,6 +27,9 @@ class SuikaScene(GameScene):
                     self.surface.get_height() - self.height) / 2
         self.create_container()
 
+        self.score = 0
+        self.font = pygame.font.Font(None, 72)
+        self.font_pos = (100, 200)
 
     def create_container(self):
         static_body = self.space.static_body
@@ -71,6 +74,9 @@ class SuikaScene(GameScene):
                 self.balls.remove(shape_b)
                 space.remove(shape_b, shape_b.body)
 
+            # Acutalizar la puntuacion
+            self.score += Fruit.fruit_properties[fruit_type]["points"]
+
             # Crear la nueva bola más grande
             self.create_ball((pos_x, pos_y), fruit_type + 1)
             return False  # Evita que pymunk procese la colisión normalmente
@@ -102,6 +108,9 @@ class SuikaScene(GameScene):
 
         for ball in self.balls:
             ball.draw(self.surface)
+
+        texto = self.font.render(str(self.score), True, (0, 0, 0))
+        self.surface.blit(texto, (100 - texto.get_width() // 2, 100 - texto.get_height() // 2))
 
     def handlePause(self):
         pass
