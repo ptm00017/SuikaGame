@@ -24,12 +24,16 @@ class SuikaScene(GameScene):
         # Crear bordes del contenedor
         self.width, self.height = 750, 670
         self.half_width, self.half_height = (self.surface.get_width() - self.width) / 2, (
-                    self.surface.get_height() - self.height) / 2
+                self.surface.get_height() - self.height) / 2
         self.create_container()
 
         self.score = 0
         self.font = pygame.font.Font(None, 72)
         self.font_pos = (100, 200)
+
+        # Cooldown para la generacion de frutas
+        self.generator_cooldown = 500  # En milisegundos
+        self.last_generation_time = 0
 
     def create_container(self):
         static_body = self.space.static_body
@@ -54,7 +58,7 @@ class SuikaScene(GameScene):
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                self.create_ball(self._correctMousePos(event.pos), random.randint(1, 5))
+                self.generate_new_ball(self._correctMousePos(event.pos), random.randint(1, 5))
 
     def collision_handler(self, arbiter, space, data):
 
@@ -93,6 +97,39 @@ class SuikaScene(GameScene):
         fruit_type = min(fruit_type, len(Fruit.fruit_properties))
         fruit = Fruit(position, fruit_type)
 
+        self.space.add(fruit.body, fruit)
+        self.balls.append(fruit)
+
+    def generate_new_ball(self, position, fruit_type):
+
+        # Cooldown para la generacion de frutas
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_generation_time < self.generator_cooldown:
+            return
+
+        self.last_generation_time = current_time
+
+        if position is None:
+            return
+
+        x, y = position
+        fruit_type = min(fruit_type, len(Fruit.fruit_properties))
+        radius = Fruit.fruit_properties[fruit_type]["radius"]
+
+        # Verificar si la posición x está dentro del rango del contenedor
+        if x < self.half_width or x > self.half_width + self.width:
+            return
+
+        # Ajustar la posición si está cerca de los bordes del contenedor
+        if x - radius < self.half_width:
+            x = self.half_width + radius
+        elif x + radius > self.half_width + self.width:
+            x = self.half_width + self.width - radius
+
+        # Generar la fruta justo encima del contenedor
+        y = self.half_height - radius - 10
+
+        fruit = Fruit((x, y), fruit_type)
         self.space.add(fruit.body, fruit)
         self.balls.append(fruit)
 
