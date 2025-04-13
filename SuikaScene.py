@@ -53,6 +53,10 @@ class SuikaScene(GameScene):
         self.mouse_button_down = False
         self.mouse_pos = None
 
+        # Musica
+        self.balls_sound = pygame.mixer.Sound("res/sounds/balls_clash.ogg")
+
+
     def handleUserInputs(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -147,6 +151,15 @@ class SuikaScene(GameScene):
 
             # Crear la nueva bola más grande
             self.create_ball((pos_x, pos_y), fruit_type + 1)
+
+            # Reproducir sonido de colisión
+            if self.balls_sound.get_num_channels() == 0:
+                previous_volume = pygame.mixer.music.get_volume()
+                pygame.mixer_music.set_volume(0.4)
+
+                self.balls_sound.play()
+
+                pygame.mixer_music.set_volume(previous_volume)
             return False  # Evita que pymunk procese la colisión normalmente
         else:
             # Comprueba si las frutas que han chocado han rebasado el contenedor

@@ -5,6 +5,7 @@ from SuikaScene import SuikaScene
 from Menu import Menu
 
 pygame.init()
+pygame.mixer.init()
 
 sceneManager = SceneManager()
 

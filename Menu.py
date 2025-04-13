@@ -12,6 +12,10 @@ class Menu(GameScene):
 
         self.button = Button(300, 200, 200, 50, (0, 255, 0), "Start Game", pygame.font.SysFont("Arial", 36), (0, 0, 0), GameState.GAME)
 
+        pygame.mixer.music.load("res/sounds/loop.ogg")
+        pygame.mixer.music.set_volume(0.8)  # Ajusta el volumen de la música
+        pygame.mixer.music.play(-1)  # Reproduce en loop infinito (-1)
+
     def handleUserInputs(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
