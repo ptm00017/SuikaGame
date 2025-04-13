@@ -149,8 +149,10 @@ class SuikaScene(GameScene):
             self.create_ball((pos_x, pos_y), fruit_type + 1)
             return False  # Evita que pymunk procese la colisión normalmente
         else:
-            # TODO: Condicion de parada del juego
-            # if shape_a.body.position.y > self.half_height + self.height or shape_b.body.position.y > self.half_height + self.height:
+            # Comprueba si las frutas que han chocado han rebasado el contenedor
+            if shape_a.body.position.y < self.half_height \
+                    or shape_b.body.position.y < self.half_height:
+                print("Game Over")
 
             return True  # Retorna True para que pymunk procese la colisión normalmente
 
