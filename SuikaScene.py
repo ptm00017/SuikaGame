@@ -27,6 +27,7 @@ class SuikaScene(GameScene):
                 self.surface.get_height() - self.height) / 2
         self.create_container()
 
+        # Puntuacion
         self.score = 0
         self.font = pygame.font.Font(None, 72)
         self.font_pos = (100, 200)
@@ -34,6 +35,76 @@ class SuikaScene(GameScene):
         # Cooldown para la generacion de frutas
         self.generator_cooldown = 500  # En milisegundos
         self.last_generation_time = 0
+
+        # Variables para la cola de frutas a caer
+        self.max_fruit_type = 5  # Fruta maxima que puede aparecer de forma aleatoria
+        self.queue_img_res = (100, 100)
+
+        self.next_fruit_images = {}
+        for i in range(1, self.max_fruit_type + 1):
+            self.next_fruit_images[i] = pygame.image.load(Fruit.fruit_properties[i]["image_path"])
+            # Escalar la imagen al tamaño de queue_img_res
+            self.next_fruit_images[i] = pygame.transform.smoothscale(self.next_fruit_images[i], self.queue_img_res)
+
+        self.current_fruit = random.randint(1, self.max_fruit_type)
+        self.next_fruit = random.randint(1, self.max_fruit_type)
+
+        # Variables de eventos
+        self.mouse_button_down = False
+        self.mouse_pos = None
+
+    def handleUserInputs(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                self.mouse_button_down = True
+                self.mouse_pos = self._correctMousePos(event.pos)
+            else:
+                self.mouse_button_down = False
+                self.mouse_pos = None
+
+    def handlePause(self):
+        pass
+
+    def update(self, deltaTime):
+        # self.generate_new_ball(self._correctMousePos(event.pos), random.randint(1, self.max_fruit_type))
+        if (self.mouse_button_down and self.mouse_pos is not None):
+            # Cooldown para la generacion de frutas
+            current_time = pygame.time.get_ticks()
+            # Si no ha pasado el tiempo de cooldown, no generamos la fruta
+            if not (current_time - self.last_generation_time < self.generator_cooldown):
+                self.last_generation_time = current_time
+                self.generate_new_ball(self.mouse_pos, self.next_fruit)
+
+                # Cambiar la fruta actual a la siguiente
+                self.current_fruit = self.next_fruit
+                self.next_fruit = random.randint(1, self.max_fruit_type)
+
+        self.space.step(deltaTime)
+
+    def draw(self):
+        # Dibujar limites del contenedor
+        for shape in self.space.shapes:
+            if isinstance(shape, pymunk.Segment):  # Verifica si es una pared
+                start_pos = (int(shape.a.x), int(shape.a.y))
+                end_pos = (int(shape.b.x), int(shape.b.y))
+                pygame.draw.line(self.surface, (0, 0, 0), start_pos, end_pos, 2)  # Dibuja una línea negra
+
+        # Dibujar frutas
+        for ball in self.balls:
+            ball.draw(self.surface)
+
+        # Dibujar la puntuacion
+        texto = self.font.render(str(self.score), True, (0, 0, 0))
+        self.surface.blit(texto, (100 - texto.get_width() // 2, 100 - texto.get_height() // 2))
+
+        # Dibujar la imagen de la siguiente fruta
+        next_fruit_image = self.next_fruit_images[self.next_fruit]
+        next_fruit_x = self.half_width + self.width + 50  # Posición a la derecha del contenedor
+        next_fruit_y = self.half_height + self.height // 2 - self.queue_img_res[1] // 2  # Centrado verticalmente
+        self.surface.blit(next_fruit_image, (next_fruit_x, next_fruit_y))
 
     def create_container(self):
         static_body = self.space.static_body
@@ -52,13 +123,6 @@ class SuikaScene(GameScene):
             wall.elasticity = 0
             wall.friction = .6
             self.space.add(wall)
-
-    def handleUserInputs(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                self.generate_new_ball(self._correctMousePos(event.pos), random.randint(1, 5))
 
     def collision_handler(self, arbiter, space, data):
 
@@ -102,13 +166,6 @@ class SuikaScene(GameScene):
 
     def generate_new_ball(self, position, fruit_type):
 
-        # Cooldown para la generacion de frutas
-        current_time = pygame.time.get_ticks()
-        if current_time - self.last_generation_time < self.generator_cooldown:
-            return
-
-        self.last_generation_time = current_time
-
         if position is None:
             return
 
@@ -132,22 +189,3 @@ class SuikaScene(GameScene):
         fruit = Fruit((x, y), fruit_type)
         self.space.add(fruit.body, fruit)
         self.balls.append(fruit)
-
-    def update(self, deltaTime):
-        self.space.step(deltaTime)
-
-    def draw(self):
-        for shape in self.space.shapes:
-            if isinstance(shape, pymunk.Segment):  # Verifica si es una pared
-                start_pos = (int(shape.a.x), int(shape.a.y))
-                end_pos = (int(shape.b.x), int(shape.b.y))
-                pygame.draw.line(self.surface, (0, 0, 0), start_pos, end_pos, 2)  # Dibuja una línea negra
-
-        for ball in self.balls:
-            ball.draw(self.surface)
-
-        texto = self.font.render(str(self.score), True, (0, 0, 0))
-        self.surface.blit(texto, (100 - texto.get_width() // 2, 100 - texto.get_height() // 2))
-
-    def handlePause(self):
-        pass

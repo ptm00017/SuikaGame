@@ -1,6 +1,7 @@
 import pygame
 from abc import ABC, abstractmethod
 
+
 class GameScene(ABC):
     prueba = False
 
@@ -9,7 +10,7 @@ class GameScene(ABC):
         Inicializa la escena.
         :param screen: Pantalla donde se dibuja el juego.
         """
-        self.screen = pygame.display.set_mode((1280, 720),  pygame.RESIZABLE)
+        self.screen = pygame.display.set_mode((1280, 720), pygame.RESIZABLE)
         self.surface = pygame.Surface((1920, 1080))
 
         self.clock = pygame.time.Clock()
@@ -49,9 +50,9 @@ class GameScene(ABC):
         return self.running
 
     def getNextGameScene(self):
-        if(self.nextGameScene is not None):
+        if (self.nextGameScene is not None):
             prueba = True
-            print("GameScene::getNextGameScene()\t"+str(self.nextGameScene))
+            print("GameScene::getNextGameScene()\t" + str(self.nextGameScene))
         return self.nextGameScene
 
     def _correctMousePos(self, event):
@@ -76,7 +77,6 @@ class GameScene(ABC):
         corrected_y = (mouse_y - y_offset) * base_height / new_height
 
         return corrected_x, corrected_y
-
 
     def _drawScaledGame(self):
 
