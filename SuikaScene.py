@@ -56,7 +56,6 @@ class SuikaScene(GameScene):
         # Musica
         self.balls_sound = pygame.mixer.Sound("res/sounds/balls_clash.ogg")
 
-
     def handleUserInputs(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -80,11 +79,12 @@ class SuikaScene(GameScene):
             # Si no ha pasado el tiempo de cooldown, no generamos la fruta
             if not (current_time - self.last_generation_time < self.generator_cooldown):
                 self.last_generation_time = current_time
-                self.generate_new_ball(self.mouse_pos, self.next_fruit)
+                was_ball_created = self.generate_new_ball(self.mouse_pos, self.next_fruit)
 
-                # Cambiar la fruta actual a la siguiente
-                self.current_fruit = self.next_fruit
-                self.next_fruit = random.randint(1, self.max_fruit_type)
+                if was_ball_created:
+                    # Cambiar la fruta actual a la siguiente
+                    self.current_fruit = self.next_fruit
+                    self.next_fruit = random.randint(1, self.max_fruit_type)
 
         self.space.step(deltaTime)
 
@@ -182,7 +182,7 @@ class SuikaScene(GameScene):
     def generate_new_ball(self, position, fruit_type):
 
         if position is None:
-            return
+            return False
 
         x, y = position
         fruit_type = min(fruit_type, len(Fruit.fruit_properties))
@@ -190,7 +190,7 @@ class SuikaScene(GameScene):
 
         # Verificar si la posición x está dentro del rango del contenedor
         if x < self.half_width or x > self.half_width + self.width:
-            return
+            return False
 
         # Ajustar la posición si está cerca de los bordes del contenedor
         if x - radius < self.half_width:
@@ -204,3 +204,5 @@ class SuikaScene(GameScene):
         fruit = Fruit((x, y), fruit_type)
         self.space.add(fruit.body, fruit)
         self.balls.append(fruit)
+
+        return True
