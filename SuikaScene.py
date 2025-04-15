@@ -2,8 +2,11 @@ import pygame
 import pymunk
 import pymunk.pygame_util
 import random
+
+from Button import Button
 from Scene import GameScene
 from Fruit import Fruit
+from SceneManager import GameState
 
 
 class SuikaScene(GameScene):
@@ -53,6 +56,12 @@ class SuikaScene(GameScene):
         self.mouse_button_down = False
         self.mouse_pos = None
 
+        # Interfaz
+        self.back_button = Button(1600, 100, "res/img/button_back.png", GameState.MENU)
+        self.restart_button = Button(1600,400, "res/img/button_restart.png", None)
+
+        # Imagenes
+
         # Musica
         self.balls_sound = pygame.mixer.Sound("res/sounds/balls_clash.ogg")
 
@@ -86,6 +95,16 @@ class SuikaScene(GameScene):
                     self.current_fruit = self.next_fruit
                     self.next_fruit = random.randint(1, self.max_fruit_type)
 
+            if self.back_button.is_clicked(self.mouse_pos):
+                print("Back to menu")
+                self.nextGameScene = self.back_button.sceneEnum
+                self.running = False
+
+            if self.restart_button.is_clicked(self.mouse_pos):
+                self.__init__(self.framerate)
+
+
+
         self.space.step(deltaTime)
 
     def draw(self):
@@ -100,15 +119,22 @@ class SuikaScene(GameScene):
         for ball in self.balls:
             ball.draw(self.surface)
 
+        # Interfaz
         # Dibujar la puntuacion
         texto = self.font.render(str(self.score), True, (0, 0, 0))
         self.surface.blit(texto, (100 - texto.get_width() // 2, 100 - texto.get_height() // 2))
+
+        # Botones
+        self.restart_button.draw(self.surface)
+        self.back_button.draw(self.surface)
 
         # Dibujar la imagen de la siguiente fruta
         next_fruit_image = self.next_fruit_images[self.next_fruit]
         next_fruit_x = self.half_width + self.width + 50  # Posición a la derecha del contenedor
         next_fruit_y = self.half_height + self.height // 2 - self.queue_img_res[1] // 2  # Centrado verticalmente
         self.surface.blit(next_fruit_image, (next_fruit_x, next_fruit_y))
+
+
 
     def create_container(self):
         static_body = self.space.static_body
