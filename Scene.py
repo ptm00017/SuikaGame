@@ -49,6 +49,9 @@ class GameScene(ABC):
     def isRunning(self) -> bool:
         return self.running
 
+    def restart(self):
+        self.__init__(self.framerate)
+
     def getNextGameScene(self):
         if (self.nextGameScene is not None):
             prueba = True

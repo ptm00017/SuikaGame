@@ -36,7 +36,7 @@ class SuikaScene(GameScene):
         self.font_pos = (100, 200)
 
         # Cooldown para la generacion de frutas
-        self.generator_cooldown = 500  # En milisegundos
+        self.generator_cooldown = 700  # En milisegundos
         self.last_generation_time = 0
 
         # Variables para la cola de frutas a caer
@@ -55,12 +55,14 @@ class SuikaScene(GameScene):
         # Variables de eventos
         self.mouse_button_down = False
         self.mouse_pos = None
+        self.is_game_over = False
 
         # Interfaz
         self.back_button = Button(1600, 100, "res/img/button_back.png", GameState.MENU)
-        self.restart_button = Button(1600,400, "res/img/button_restart.png", None)
+        self.restart_button = Button(1600, 400, "res/img/button_restart.png", None)
 
         # Imagenes
+        self.game_over_image = pygame.image.load("res/img/game_over.png")
 
         # Musica
         self.balls_sound = pygame.mixer.Sound("res/sounds/balls_clash.ogg")
@@ -81,31 +83,29 @@ class SuikaScene(GameScene):
         pass
 
     def update(self, deltaTime):
-        # self.generate_new_ball(self._correctMousePos(event.pos), random.randint(1, self.max_fruit_type))
         if (self.mouse_button_down and self.mouse_pos is not None):
-            # Cooldown para la generacion de frutas
-            current_time = pygame.time.get_ticks()
-            # Si no ha pasado el tiempo de cooldown, no generamos la fruta
-            if not (current_time - self.last_generation_time < self.generator_cooldown):
-                self.last_generation_time = current_time
-                was_ball_created = self.generate_new_ball(self.mouse_pos, self.next_fruit)
+            if not self.is_game_over:
+                # Cooldown para la generacion de frutas
+                current_time = pygame.time.get_ticks()
+                # Si no ha pasado el tiempo de cooldown, no generamos la fruta
+                if not (current_time - self.last_generation_time < self.generator_cooldown):
+                    self.last_generation_time = current_time
+                    was_ball_created = self.generate_new_ball(self.mouse_pos, self.next_fruit)
 
-                if was_ball_created:
-                    # Cambiar la fruta actual a la siguiente
-                    self.current_fruit = self.next_fruit
-                    self.next_fruit = random.randint(1, self.max_fruit_type)
+                    if was_ball_created:
+                        # Cambiar la fruta actual a la siguiente
+                        self.current_fruit = self.next_fruit
+                        self.next_fruit = random.randint(1, self.max_fruit_type)
 
             if self.back_button.is_clicked(self.mouse_pos):
-                print("Back to menu")
                 self.nextGameScene = self.back_button.sceneEnum
                 self.running = False
 
             if self.restart_button.is_clicked(self.mouse_pos):
                 self.__init__(self.framerate)
 
-
-
-        self.space.step(deltaTime)
+        if not self.is_game_over:
+            self.space.step(deltaTime)
 
     def draw(self):
         # Dibujar limites del contenedor
@@ -119,22 +119,24 @@ class SuikaScene(GameScene):
         for ball in self.balls:
             ball.draw(self.surface)
 
-        # Interfaz
-        # Dibujar la puntuacion
-        texto = self.font.render(str(self.score), True, (0, 0, 0))
-        self.surface.blit(texto, (100 - texto.get_width() // 2, 100 - texto.get_height() // 2))
-
-        # Botones
-        self.restart_button.draw(self.surface)
-        self.back_button.draw(self.surface)
-
         # Dibujar la imagen de la siguiente fruta
         next_fruit_image = self.next_fruit_images[self.next_fruit]
         next_fruit_x = self.half_width + self.width + 50  # Posición a la derecha del contenedor
         next_fruit_y = self.half_height + self.height // 2 - self.queue_img_res[1] // 2  # Centrado verticalmente
         self.surface.blit(next_fruit_image, (next_fruit_x, next_fruit_y))
 
+        # Interfaz
+        # Dibujar la puntuacion
+        texto = self.font.render(str(self.score), True, (0, 0, 0))
+        self.surface.blit(texto, (100 - texto.get_width() // 2, 100 - texto.get_height() // 2))
 
+        # Dibujar pantalla de Game Over
+        if (self.is_game_over):
+            self.surface.blit(self.game_over_image, (400, 0))
+
+        # Botones
+        self.restart_button.draw(self.surface)
+        self.back_button.draw(self.surface)
 
     def create_container(self):
         static_body = self.space.static_body
@@ -191,7 +193,7 @@ class SuikaScene(GameScene):
             # Comprueba si las frutas que han chocado han rebasado el contenedor
             if shape_a.body.position.y < self.half_height \
                     or shape_b.body.position.y < self.half_height:
-                print("Game Over")
+                self.is_game_over = True
 
             return True  # Retorna True para que pymunk procese la colisión normalmente
 

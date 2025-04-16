@@ -13,9 +13,11 @@ class Menu(GameScene):
 
         self.mouse_pos = None
 
-        pygame.mixer.music.load("res/sounds/loop.ogg")
-        pygame.mixer.music.set_volume(0.8)  # Ajusta el volumen de la música
-        pygame.mixer.music.play(-1)  # Reproduce en loop infinito (-1)
+        # Si la canción no se estaba reproduciéndose antes, reproducir
+        if not pygame.mixer.music.get_busy():
+            pygame.mixer.music.load("res/sounds/loop.ogg")
+            pygame.mixer.music.set_volume(0.8)  # Ajusta el volumen de la música
+            pygame.mixer.music.play(-1)  # Reproduce en loop infinito (-1)
 
 
 
