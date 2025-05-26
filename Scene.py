@@ -10,13 +10,13 @@ class GameScene(ABC):
     """
 
 
-    def __init__(self, framerate):
+    def __init__(self, framerate, window_resolution=(1280, 720)):
         """
         Inicializa la escena.
         :param screen: Pantalla donde se dibuja el juego.
         """
         # La ventana del juego, se puede redimensionar
-        self.screen = pygame.display.set_mode((1280, 720), pygame.RESIZABLE)
+        self.screen = pygame.display.set_mode(window_resolution, pygame.RESIZABLE)
 
         # Pantalla interna del juego, internamente se dibuja cualquier cosa a esta superficie y se renderiza a esa resolucion,
         # despues es reescalado según las dimensiones de la ventana.
@@ -71,7 +71,9 @@ class GameScene(ABC):
         Reinicia la escena por completo, llama de nuevo al contructor de la escena.
         :return:
         """
-        self.__init__(self.framerate)
+        window_resolution = self.screen.get_size()
+        print("GameScene::restart() " + str(window_resolution))
+        self.__init__(self.framerate, window_resolution)
 
     def getNextGameScene(self):
         if (self.nextGameScene is not None):

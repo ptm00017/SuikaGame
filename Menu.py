@@ -4,8 +4,8 @@ from Scene import GameScene
 from SceneManager import GameState
 
 class Menu(GameScene):
-    def __init__(self, framerate):
-        super().__init__(framerate)
+    def __init__(self, framerate, window_resolution):
+        super().__init__(framerate, window_resolution)
         self.clock = pygame.time.Clock()
 
         self.button_play = Button(700, 620, "res/img/button_play.png", GameState.GAME)

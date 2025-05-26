@@ -11,8 +11,8 @@ from SceneManager import GameState
 
 class SuikaScene(GameScene):
 
-    def __init__(self, framerate=60):
-        super().__init__(framerate)
+    def __init__(self, framerate, window_resolution):
+        super().__init__(framerate, window_resolution)
 
         # Inicializar espacio de físicas
         self.space = pymunk.Space()
@@ -115,7 +115,7 @@ class SuikaScene(GameScene):
                 self.running = False
 
             if self.restart_button.is_clicked(self.mouse_pos):
-                self.__init__(self.framerate)
+                self.restart()
 
         # Mientras que el recipiente de frutas no haya rebosado, seguir actualizando el espacio de físicas
         if not self.is_game_over:
