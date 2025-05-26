@@ -16,7 +16,7 @@ class SuikaScene(GameScene):
 
         # Inicializar espacio de físicas
         self.space = pymunk.Space()
-        self.space.gravity = (0, 900)  # Gravedad hacia abajo
+        self.space.gravity = (0, 1300)  # Gravedad hacia abajo
 
         handler = self.space.add_collision_handler(1, 1)  # Colision de frutas
         handler.begin = self.collision_handler
@@ -36,18 +36,27 @@ class SuikaScene(GameScene):
         self.font_pos = (100, 200)
 
         # Cooldown para la generacion de frutas
-        self.generator_cooldown = 700  # En milisegundos
+        self.generator_cooldown = 500  # En milisegundos
         self.last_generation_time = 0
 
         # Variables para la cola de frutas a caer
         self.max_fruit_type = 5  # Fruta maxima que puede aparecer de forma aleatoria
-        self.queue_img_res = (100, 100)
+        self.queue_img_size = 200  # Resolucion de la imagen de la cola de frutas
 
         self.next_fruit_images = {}
         for i in range(1, self.max_fruit_type + 1):
             self.next_fruit_images[i] = pygame.image.load(Fruit.fruit_properties[i]["image_path"])
+
+            # Pequeña funcion matemática para escalar la imagen de la fruta
+            min_fruit_scale_factor = 0.3  # Establecer el tamaño de la imagen de la fruta más pequeña
+            scale_factor = min_fruit_scale_factor + (1 - min_fruit_scale_factor) * (
+                        i / self.max_fruit_type)
+
             # Escalar la imagen al tamaño de queue_img_res
-            self.next_fruit_images[i] = pygame.transform.smoothscale(self.next_fruit_images[i], self.queue_img_res)
+            aspect_ratio = self.next_fruit_images[i].get_width() / self.next_fruit_images[i].get_height()
+            fruit_img_res = (self.queue_img_size * aspect_ratio * scale_factor, self.queue_img_size * scale_factor)
+            self.next_fruit_images[i] = pygame.transform.smoothscale(self.next_fruit_images[i], fruit_img_res)
+
 
         self.current_fruit = random.randint(1, self.max_fruit_type)
         self.next_fruit = random.randint(1, self.max_fruit_type)
@@ -58,8 +67,8 @@ class SuikaScene(GameScene):
         self.is_game_over = False
 
         # Interfaz
-        self.back_button = Button(1600, 100, "res/img/button_back.png", GameState.MENU)
-        self.restart_button = Button(1600, 400, "res/img/button_restart.png", None)
+        self.back_button = Button(1650, 40, "res/img/button_back.png", GameState.MENU)
+        self.restart_button = Button(1650, 280, "res/img/button_restart.png", None)
 
         # Imagenes
         self.game_over_image = pygame.image.load("res/img/game_over.png")
@@ -119,10 +128,20 @@ class SuikaScene(GameScene):
         for ball in self.balls:
             ball.draw(self.surface)
 
-        # Dibujar la imagen de la siguiente fruta
+        # Dibujar la imagen de la siguiente fruta con escala
         next_fruit_image = self.next_fruit_images[self.next_fruit]
+        min_fruit_scale_factor = 0.3  # Para cambiar el tamaño de la imagen de la fruta más pequeña
+        scale_factor = min_fruit_scale_factor + (1 - min_fruit_scale_factor) * (self.next_fruit / self.max_fruit_type)
+
+        # Calcular dimensiones escaladas manteniendo la relación de aspecto
+        #aspect_ratio = next_fruit_image.get_width() / next_fruit_image.get_height()
+        #scaled_width = int(self.queue_img_res[0] * aspect_ratio)
+        #scaled_height = int(self.queue_img_res[1])
+
+        #scaled_image = pygame.transform.smoothscale(next_fruit_image, (scaled_width, scaled_height))
+
         next_fruit_x = self.half_width + self.width + 50  # Posición a la derecha del contenedor
-        next_fruit_y = self.half_height + self.height // 2 - self.queue_img_res[1] // 2  # Centrado verticalmente
+        next_fruit_y = self.half_height + self.height // 2 - next_fruit_image.get_height() // 2  # Centrado verticalmente
         self.surface.blit(next_fruit_image, (next_fruit_x, next_fruit_y))
 
         # Interfaz

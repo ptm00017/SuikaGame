@@ -8,8 +8,11 @@ class Menu(GameScene):
         super().__init__(framerate)
         self.clock = pygame.time.Clock()
 
-        self.button_play = Button(700, 440, "res/img/button_play.png", GameState.GAME)
-        self.button_exit = Button(700, 600, "res/img/button_exit.png", None)
+        self.button_play = Button(700, 620, "res/img/button_play.png", GameState.GAME)
+        self.button_exit = Button(700, 780, "res/img/button_exit.png", None)
+
+        self.title_image = pygame.image.load("res/img/title.png")
+
 
         self.mouse_pos = None
 
@@ -44,3 +47,5 @@ class Menu(GameScene):
         self.surface.fill((255, 255, 255))
         self.button_play.draw(self.surface)
         self.button_exit.draw(self.surface)
+
+        self.surface.blit(self.title_image, (340, 50))
