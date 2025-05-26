@@ -4,7 +4,10 @@ import pygame
 import pymunk
 
 class Fruit(pymunk.Circle):
-    # Parametro de cada fruta
+    """
+    Clase que representa una fruta en el juego, hereda de pymunk.Circle.
+    Contiene las propiedades fisicas de una fruta y su imagen asociada.
+    """
     fruit_properties = {
         1: {"radius": 25, "elasticity": 0, "friction": 1, "mass": 20, "points": 2, "image_path": "res/img/dulces/ball_1.png"},
         2: {"radius": 32, "elasticity": 0, "friction": 1, "mass": 20, "points": 4, "image_path": "res/img/dulces/ball_2.png"},
@@ -20,6 +23,12 @@ class Fruit(pymunk.Circle):
     }
 
     def __init__(self, position, fruit_type):
+        """
+        Inicializa una fruta con sus propiedades y posición.
+        :param position: Posición inicial de la fruta (pymunk.Vec2d)
+        :param fruit_type: Identificador de la fruta (1-11)
+        """
+
         properties = self.fruit_properties[fruit_type]
         mass = properties["mass"]
         radius = properties["radius"]
@@ -32,15 +41,17 @@ class Fruit(pymunk.Circle):
         self.elasticity = properties["elasticity"]
         self.friction = properties["friction"]
         self.fruit_type = fruit_type
-        self.collision_type = 1
+        self.collision_type = 1 # identificador de colisión de pymunk para las físicas de frutas
         self.image = pygame.image.load(properties["image_path"])
         aspect_ratio = self.image.get_width() / self.image.get_height()
         self.image = pygame.transform.smoothscale(self.image, (2 * radius * aspect_ratio, 2 * radius))
 
-    #def draw(self, screen):
-    #    screen.blit(self.image, (int(self.body.position.x) - self.radius, int(self.body.position.y) - self.radius))
-
     def draw(self, screen):
+        """
+        Se encarga de dibujar la fruta en la pantalla.
+        :param screen: Superficie de pygame
+        """
+
         # Obtén el ángulo de rotación del cuerpo en grados
         angle = -math.degrees(self.body.angle)  # Convierte de radianes a grados (el signo negativo es para que gire en la dirección correcta)
 

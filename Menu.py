@@ -37,15 +37,18 @@ class Menu(GameScene):
 
     def update(self, deltaTime):
         if self.mouse_pos is not None:
+            # Terminar la ejecucion del menú y establece la siguiente escena como la escena del juego.
             if self.button_play.is_clicked(self.mouse_pos):
                 self.nextGameScene = self.button_play.sceneEnum
                 self.running = False
+            # Cerrar el juego por completo
             if self.button_exit.is_clicked(self.mouse_pos):
                 pygame.quit()
 
     def draw(self):
+        # Dibujar fondo del juego
         self.surface.fill((255, 255, 255))
+
         self.button_play.draw(self.surface)
         self.button_exit.draw(self.surface)
-
         self.surface.blit(self.title_image, (340, 50))

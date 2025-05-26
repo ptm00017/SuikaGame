@@ -18,7 +18,9 @@ class SuikaScene(GameScene):
         self.space = pymunk.Space()
         self.space.gravity = (0, 1300)  # Gravedad hacia abajo
 
+        # Crear colisionador de pymunk para las frutas
         handler = self.space.add_collision_handler(1, 1)  # Colision de frutas
+        # Establecer funcion para manejar colisiones
         handler.begin = self.collision_handler
 
         self.draw_options = pymunk.pygame_util.DrawOptions(self.surface)
@@ -75,12 +77,14 @@ class SuikaScene(GameScene):
 
         # Musica
         self.balls_sound = pygame.mixer.Sound("res/sounds/balls_clash.ogg")
+        self.gameover_sound = pygame.mixer.Sound("res/sounds/game_over.ogg")
 
     def handleUserInputs(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
 
+            # Guardar el estado del ratón para la lógica del juego
             if event.type == pygame.MOUSEBUTTONDOWN:
                 self.mouse_button_down = True
                 self.mouse_pos = self._correctMousePos(event.pos)
@@ -113,6 +117,7 @@ class SuikaScene(GameScene):
             if self.restart_button.is_clicked(self.mouse_pos):
                 self.__init__(self.framerate)
 
+        # Mientras que el recipiente de frutas no haya rebosado, seguir actualizando el espacio de físicas
         if not self.is_game_over:
             self.space.step(deltaTime)
 
@@ -130,16 +135,6 @@ class SuikaScene(GameScene):
 
         # Dibujar la imagen de la siguiente fruta con escala
         next_fruit_image = self.next_fruit_images[self.next_fruit]
-        min_fruit_scale_factor = 0.3  # Para cambiar el tamaño de la imagen de la fruta más pequeña
-        scale_factor = min_fruit_scale_factor + (1 - min_fruit_scale_factor) * (self.next_fruit / self.max_fruit_type)
-
-        # Calcular dimensiones escaladas manteniendo la relación de aspecto
-        #aspect_ratio = next_fruit_image.get_width() / next_fruit_image.get_height()
-        #scaled_width = int(self.queue_img_res[0] * aspect_ratio)
-        #scaled_height = int(self.queue_img_res[1])
-
-        #scaled_image = pygame.transform.smoothscale(next_fruit_image, (scaled_width, scaled_height))
-
         next_fruit_x = self.half_width + self.width + 50  # Posición a la derecha del contenedor
         next_fruit_y = self.half_height + self.height // 2 - next_fruit_image.get_height() // 2  # Centrado verticalmente
         self.surface.blit(next_fruit_image, (next_fruit_x, next_fruit_y))
@@ -158,6 +153,9 @@ class SuikaScene(GameScene):
         self.back_button.draw(self.surface)
 
     def create_container(self):
+        """
+        Crea el contenedor del juego
+        """
         static_body = self.space.static_body
         thickness = 1
 
@@ -176,7 +174,9 @@ class SuikaScene(GameScene):
             self.space.add(wall)
 
     def collision_handler(self, arbiter, space, data):
-
+        """
+        Maneja la colisión entre dos frutas.
+        """
         shape_a, shape_b = arbiter.shapes
 
         if shape_a.fruit_type == shape_b.fruit_type:
@@ -209,14 +209,24 @@ class SuikaScene(GameScene):
                 pygame.mixer_music.set_volume(previous_volume)
             return False  # Evita que pymunk procese la colisión normalmente
         else:
-            # Comprueba si las frutas que han chocado han rebasado el contenedor
+            # Condicion de fin de juego, comprueba si las frutas que han chocado han rebasado el techo del contenedor
             if shape_a.body.position.y < self.half_height \
                     or shape_b.body.position.y < self.half_height:
                 self.is_game_over = True
 
+                # Reproducir sonido de game over
+                self.gameover_sound.play()
+
             return True  # Retorna True para que pymunk procese la colisión normalmente
 
     def create_ball(self, position, fruit_type):
+        """
+        Crea una nueva fruta en la posición especificada y con el tipo de fruta dado.
+        Se usa para crear nuevas frutas cuando dos frutas del mismo tipo colisionan.
+        :param position: (x, y) Posición de la fruta
+        :param fruit_type: Tipo de fruta (1-11)
+        :return:
+        """
         if position is None:
             return
 
@@ -227,6 +237,12 @@ class SuikaScene(GameScene):
         self.balls.append(fruit)
 
     def generate_new_ball(self, position, fruit_type):
+        """
+        Crea una nueva fruta al partir del click del ratón en el juego
+        :param position:
+        :param fruit_type:
+        :return:
+        """
 
         if position is None:
             return False
@@ -234,6 +250,10 @@ class SuikaScene(GameScene):
         x, y = position
         fruit_type = min(fruit_type, len(Fruit.fruit_properties))
         radius = Fruit.fruit_properties[fruit_type]["radius"]
+
+        # Desplazar la fruta un poco horizontalmente para evitar que se puedan contruir torres gigantes
+        # presionando rápidamente el botón del ratón
+        #x += random.uniform(-2, +2)
 
         # Verificar si la posición x está dentro del rango del contenedor
         if x < self.half_width or x > self.half_width + self.width:
