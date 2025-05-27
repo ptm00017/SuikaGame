@@ -21,6 +21,6 @@ try:
         # Cuando se termina el bucle de ejecución del juego, este devuelve es la siguiente escena que se debe mostrar
         sceneManager.changeScene(sceneManager.getScene().getNextGameScene())
 except Exception as e:
-    print(e)
+    print(" ")
 
 pygame.quit()
