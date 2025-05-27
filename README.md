@@ -1,22 +1,24 @@
 # Suika Game
 
-#### Introducción
+### Introducción
 Recreación del famoso [Suika Game](https://suikagame.jp/) escrito en python utilizando las librerias [pygame](www.pygame.org) y [pymunk](pymunk.org).  
 
 Este proyecto ha sido realizado para la asignatura de Sistemas Multimedia de la Universidad de Jaén.
 
-#### Instrucciones
+No tengo intención de infringir derechos de autor ni de causar perjuicios a ninguna de los autores originales.
 
-Para compilar el ejecutable en Windows, clonar el repositorio y abrir una terminal de PowerShell en la raíz del proyecto y ejecutar
+### Instrucciones
+
+Para compilar el ejecutable en Windows, clonar el repositorio, abrir una terminal de PowerShell en la raíz del proyecto y ejecutar:
 
 ```
 pip install .\requirements.txt
 python .\build.py build
 ```
 
-El ejecutable aparecerá en `.\build\output\`
+El ejecutable aparecerá en `.\build\output\`.
 
-#### Créditos
+### Créditos
 
 - Idea del juego original de Aladdin X
 - Ilustaciones:  [@c_of_creation](https://www.instagram.com/c_of_creation/)
