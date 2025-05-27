@@ -14,7 +14,7 @@ class SceneManager:
 
     def changeScene(self, sceneEnum):
         self.currentScene = sceneEnum
-        self.scenes[self.currentScene].running = True
+        self.scenes[self.currentScene].restart()
 
     def addScene(self, sceneEnum, scene):
         self.scenes.update({sceneEnum: scene})

@@ -5,7 +5,7 @@ include_files = ['res/']
 
 # Configuración del ejecutable
 executables = [
-    Executable("main.py", base="Win32GUI", target_name="suika.exe")
+    Executable("main.py", base="Win32GUI", target_name="suika.exe", icon='res/icon.ico')
 ]
 
 # Setup de cx_Freeze
